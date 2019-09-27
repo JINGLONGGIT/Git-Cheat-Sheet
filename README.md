@@ -113,6 +113,8 @@ $ git clone ssh://user@domain.com/repo.git
 
 #通过 HTTP
 $ git clone http://domain.com/user/repo.git
+
+附注：将repo替换成需要克隆的远程仓库的名字
 ```
 
 ##### 创建一个新的本地仓库:
@@ -221,6 +223,12 @@ $ git log
 ##### 显示所有提交（仅显示提交的hash和message）：
 ```
 $ git log --oneline
+$ git log --pretty=oneline
+```
+
+#### 显示最近的n次提交记录
+```
+$ git log -n
 ```
 
 ##### 显示某个用户的所有提交：
@@ -253,7 +261,25 @@ $ git reflog show
 $ git reflog delete
 ```
 
----
+##### 统计某段时间的代码提交行数
+```
+示例：统计作者为“JINGLONG”在2019年1月1号到2019年9月27号所有的代码提交行数
+$ git log --author="JINGLONG" --pretty=tformat: --since=2019-1-1 --until=2019-9-27 --numstat | awk '{add += $1; subs += $2; loc += $1 - $2} END {printf "add lines: %s, removed lines: %s, total lines: %s\n", add, subs, loc}' -
+```
+
+##### 统计某个仓库里的个人代码量
+```
+示例：统计作者为“JINGLONG”的个人代码量
+$ git log --author="JINGLONG" --pretty=tformat: --numstat | awk '{add += $1; subs += $2; loc += $1 - $2} END {printf "add lines: %s, removed lines: %s, total lines: %s\n", add, subs, loc}' -
+```
+
+```
+示例：统计作者为“景龙”的个人代码量
+$ git log --author="景龙" --pretty=tformat: --numstat | awk '{add += $1; subs += $2; loc += $1 - $2} END {printf "add lines: %s, removed lines: %s, total lines: %s\n", add, subs, loc}' -
+```
+
+**注意：如果不加作者，则默认统计该仓库所有作者的代码提交行数**
+
 ### 分支与标签
 
 ##### 列出所有的分支：
@@ -426,19 +452,20 @@ squash <commit_id3>
 ---
 ### 撤销
 
-##### 放弃工作目录下的所有修改：
+##### 放弃工作区的所有修改：
 ```
 $ git reset --hard HEAD
 ```
 
-##### 移除缓存区的所有文件（i.e. 撤销上次`git add`）:
+##### 移除缓存区的所有文件（修改内容放到了工作区）:
 ```
 $ git reset HEAD
 ```
 
-##### 放弃某个文件的所有本地修改：
+##### 放弃某个文件的所有本地修改（撤销工作区修改）：
 ```
 $ git checkout HEAD <file>
+$ git checkout -- file   （注意：`--`前后都有空格）
 ```
 
 ##### 重置一个提交（通过创建一个截然不同的新提交）
